@@ -27,8 +27,8 @@ var LineByLineReader = function (filepath, options) {
 
 	events.EventEmitter.call(this);
 
-	process.nextTick(function () {
-		self._initStream();
+	setImmediate(function () {
+	    self._initStream();
 	});
 };
 
@@ -54,16 +54,16 @@ LineByLineReader.prototype._initStream = function () {
 		self._lines[0] = self._lineFragment + self._lines[0];
 		self._lineFragment = self._lines.pop() || '';
 
-		process.nextTick(function () {
-			self._nextLine();
+		setImmediate(function () {
+		    self._nextLine();
 		});
 	});
 
 	readStream.on('end', function () {
 		self._end = true;
 
-		process.nextTick(function () {
-			self._nextLine();
+		setImmediate(function () {
+		    self._nextLine();
 		});
 	});
 
@@ -79,8 +79,8 @@ LineByLineReader.prototype._nextLine = function () {
 		this._lineFragment = '';
 
 		if (!this._paused) {
-			process.nextTick(function () {
-				self.emit('end');
+			setImmediate(function () {
+			    self.emit('end');
 			});
 		}
 		return;
@@ -107,8 +107,8 @@ LineByLineReader.prototype._nextLine = function () {
 	}
 
 	if (!this._paused) {
-		process.nextTick(function () {
-			self._nextLine();
+		setImmediate(function () {
+		    self._nextLine();
 		});
 	}
 };
@@ -122,8 +122,8 @@ LineByLineReader.prototype.resume = function () {
 
 	this._paused = false;
 
-	process.nextTick(function () {
-		self._nextLine();
+	setImmediate(function () {
+	    self._nextLine();
 	});
 };
 
@@ -133,8 +133,8 @@ LineByLineReader.prototype.close = function () {
 	this._readStream.destroy();
 	this._end = true;
 
-	process.nextTick(function () {
-		self._nextLine();
+	setImmediate(function () {
+	    self._nextLine();
 	});
 };
 
