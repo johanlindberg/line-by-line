@@ -74,6 +74,14 @@ LineByLineReader.prototype._nextLine = function () {
 	var self = this,
 		line;
 
+    if (this._lines.length > 0) {
+	this.emit('line', this._lines.shift());
+	setImmediate(function() {
+	    self._nextLine();
+	});
+	return;
+    }
+
 	if (this._end && !!this._lineFragment) {
 		this.emit('line', this._lineFragment);
 		this._lineFragment = '';
